@@ -9,7 +9,7 @@
 <style>
 :root{--ink:#4a4358;--crema:#fdf6ee;--rosa:#f6d5da;--lav:#dcd3ee;--salvia:#d3e6d8;--sol:#fbe8a6;--noche:#1b1740}
 *{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:100px}
 body{font-family:Lora,Georgia,serif;background:var(--crema);color:var(--ink);line-height:1.8;font-size:clamp(16px,2.2vw,19px);overflow-x:hidden}
 h1,h2,h3,.px{font-family:'Press Start 2P',monospace;line-height:1.5;font-weight:400}
 img,video{max-width:100%;display:block}
@@ -19,7 +19,7 @@ button:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
 button:focus-visible,a:focus-visible,input:focus-visible{outline:3px dashed #b07cc6;outline-offset:3px}
 
 /* PORTADA */
-#portada{position:fixed;inset:0;z-index:50;background:linear-gradient(#0f0c2b,#2c2260 70%,#4b3a7c);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;color:#fff;transition:opacity 1s}
+#portada{overflow-y:auto;position:fixed;inset:0;z-index:50;background:linear-gradient(#0f0c2b,#2c2260 70%,#4b3a7c);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;color:#fff;transition:opacity 1s}
 #portada.off{opacity:0;pointer-events:none}
 #estrellas{position:absolute;inset:0;width:100%;height:100%}
 #portada>*:not(canvas){position:relative}
@@ -38,7 +38,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px dashed #b07
 .sac{animation:sac .3s}
 
 /* INTERIOR */
-#interior{display:none;padding-bottom:90px}
+#interior{display:none;padding-top:84px}
 #interior.on{display:block}
 section{max-width:860px;margin:0 auto;padding:70px 22px}
 section h2{font-size:clamp(14px,3.4vw,22px);margin-bottom:26px;text-align:center}
@@ -72,9 +72,29 @@ section h2{font-size:clamp(14px,3.4vw,22px);margin-bottom:26px;text-align:center
 .spot a.b{display:inline-block;text-decoration:none;background:#cdeed6;color:var(--ink);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:14px 20px;font-family:'Press Start 2P';font-size:11px;margin:12px 0}
 .spot img{margin:14px auto;width:220px;image-rendering:auto}
 /* barra y música */
-#cont{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--ink);color:var(--sol);text-align:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));font-family:'Press Start 2P',monospace;font-size:clamp(7px,2vw,10px);line-height:1.7;display:none}
-#cont.on{display:block}
-#mus{position:fixed;top:calc(12px + env(safe-area-inset-top));right:12px;z-index:70;padding:10px 12px;font-size:10px;display:none}
+#hud{position:fixed;top:0;left:0;right:0;z-index:30;background:var(--ink);color:var(--sol);display:none;padding-top:env(safe-area-inset-top)}
+#hud.on{display:block}
+#cont{text-align:center;font-family:'Press Start 2P',monospace;font-size:clamp(6px,1.9vw,9px);padding:7px 8px 6px;border-bottom:2px solid #6b6280;line-height:1.6}
+#nav{display:flex;gap:6px;overflow-x:auto;padding:6px 8px;justify-content:safe center;scrollbar-width:none}
+#nav::-webkit-scrollbar{display:none}
+#nav a{flex:none;font-family:'Press Start 2P',monospace;font-size:clamp(7px,1.9vw,10px);color:#efe9f3;text-decoration:none;padding:8px 10px;border:2px solid transparent}
+#nav a.act{background:var(--sol);color:var(--ink);border-color:var(--sol)}
+button:disabled{opacity:.35;cursor:default}
+#rzt,#pzt{transition:opacity .25s}
+.cv{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%}
+#portada button{border-color:#fff3c4;box-shadow:4px 4px 0 #6b4fa0}
+#portada #pzk{background:transparent;color:#cfc6f0;box-shadow:none;border:2px solid #6b4fa0}
+#pregunta{background:rgba(15,12,43,.35)}
+#pregunta .box{background:rgba(27,23,64,.9);color:#fff;border-color:#ffd966;box-shadow:5px 5px 0 #6b4fa0}
+#pregunta h2{color:#ffd966}
+#pregunta input{background:#120f33;color:#fff;border-color:#8c7fc0}
+#pregunta #msg{color:#ffc9d6}
+#pregunta button{border-color:#fff3c4;box-shadow:4px 4px 0 #6b4fa0}
+#pre{position:fixed;inset:0;z-index:60;background:rgba(15,12,43,.85);display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+#pre.on{display:flex}
+#pre .box{max-width:520px;width:100%;padding:26px 22px;text-align:center}
+#pre h2{font-size:12px;margin-bottom:18px}
+#mus{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));right:12px;z-index:70;padding:10px 12px;font-size:10px;display:none}
 #mus.on{display:block}
 #luz{position:fixed;inset:0;z-index:90;background:rgba(20,15,40,.92);display:none;align-items:center;justify-content:center;cursor:zoom-out;padding:14px}
 #luz.on{display:flex}#luz img{max-height:94vh;border:3px solid #fff}
@@ -87,10 +107,23 @@ section h2{font-size:clamp(14px,3.4vw,22px);margin-bottom:26px;text-align:center
 <!-- PORTADA -->
 <div id="portada">
   <canvas id="estrellas"></canvas>
+  <div class="cv" id="cv1">
   <div class="astros"><span data-spr="sol" data-s="8"></span><span data-spr="luna" data-s="8"></span></div>
   <h1>Recuerdos de Valentina y Pedro</h1>
+  <h2 class="px" style="font-size:clamp(10px,2.8vw,17px);color:#ffd966;margin-bottom:12px;max-width:640px">Valentina, esta página sigue aquí para ti.</h2>
+  <p style="font-size:.9em;margin-bottom:16px">Entra cuando quieras, con calma. No hay prisa y no tienes que responder nada.</p>
   <p>Aquí y en mi corazón se van a almacenar nuestros momentos.</p>
-  <button id="entrar">Entrar</button>
+  <button id="entrar">Entrar</button></div>
+  <div class="cv" id="cv2" style="display:none">
+    <div class="astros" style="margin-bottom:22px"><span data-spr="sol" data-s="4"></span><span data-spr="luna" data-s="4"></span></div>
+    <h2 class="px" style="font-size:clamp(10px,2.6vw,15px);color:#ffd966;margin-bottom:28px;max-width:640px">Por estas razones quiero que seas tú</h2>
+    <div id="pz" style="min-height:190px;max-width:680px;display:flex;align-items:center;justify-content:center">
+      <p id="pzt" style="font-size:clamp(19px,4.4vw,30px);font-style:italic;line-height:1.6;color:#fff;text-shadow:2px 2px 0 #3b2f6b;margin:0"></p>
+    </div>
+    <span id="pzn" hidden></span>
+    <div style="display:flex;gap:22px;justify-content:center;margin:24px 0 26px"><button id="pzp" aria-label="Anterior">&#9664;</button><button id="pzs" aria-label="Siguiente">&#9654;</button></div>
+    <button id="pzk" style="font-size:9px;padding:10px 14px">Saltar</button>
+  </div>
 </div>
 
 <!-- PREGUNTA -->
@@ -107,17 +140,18 @@ section h2{font-size:clamp(14px,3.4vw,22px);margin-bottom:26px;text-align:center
 <button id="mus" title="Música">♪ ON</button>
 <audio id="audio" src="mejor%20de%20lo%20que%20me%20esperaba.mp3" loop preload="auto"></audio>
 <div id="luz"><img alt=""></div>
-<div id="cont"></div>
+<header id="hud"><div id="cont"></div>
+<nav id="nav"><a href="#inicio">Inicio</a><a href="#historia">Historia</a><a href="#detalles">Detalles</a><a href="#noches">Noches</a><a href="#galeria">Galería</a><a href="#razones">Razones</a><a href="#cancion">Canción</a><a href="#cartas">Cartas</a></nav></header>
 
 <main id="interior">
 
-  <section class="hero rev">
+  <section class="hero rev" id="inicio">
     <div style="display:flex;gap:30px;justify-content:center;margin-bottom:22px"><span data-spr="sol" data-s="5"></span><span data-spr="luna" data-s="5"></span></div>
     <h1>Érase una vez nosotros</h1>
     <p class="sub">Un cuento que escribí para ti.</p>
   </section>
 
-  <section style="padding-top:0">
+  <section id="historia" style="padding-top:0">
     <h2>La princesa del vestido amarillo</h2>
     <p class="sub">Un cuento sobre dos mundos, un encuentro que tardó años y un amor que aún busca su eternidad.</p>
     <div id="cuentoBox"></div>
@@ -362,7 +396,7 @@ Pero que, si los dos así lo quieren, todavía pueden escribir juntos.
 </script>
 
   <div class="sep"></div>
-  <section class="rev">
+  <section class="rev" id="detalles">
     <h2>Los pequeños detalles</h2>
     <p class="sub">Lo que parece poco y termina siendo todo.</p>
     <ul class="lista">
@@ -374,7 +408,7 @@ Pero que, si los dos así lo quieren, todavía pueden escribir juntos.
   </section>
 
   <div class="sep"></div>
-  <section class="alt rev"><div>
+  <section class="alt rev" id="noches"><div>
     <h2>Todas nuestras noches</h2>
     <p class="sub">En llamada, scrolleando juntos, viendo una peli, haciendo nada.</p>
     <p style="text-align:center;margin-bottom:22px">Cualquier plan se volvía bonito si era contigo. Y todavía nos quedan películas pendientes.</p>
@@ -388,7 +422,7 @@ Pero que, si los dos así lo quieren, todavía pueden escribir juntos.
   </section>
 
   <div class="sep"></div>
-  <section class="rev">
+  <section class="rev" id="galeria">
     <h2>Nuestros momentos</h2>
     <p class="sub">Toca una foto para verla en grande.</p>
     <div class="grid">
@@ -404,7 +438,26 @@ Pero que, si los dos así lo quieren, todavía pueden escribir juntos.
     <div class="foto v" id="v2box" style="display:none"><video id="v2" src="video-02.mp4" controls playsinline preload="metadata"></video></div>
   </section>
 
-  <section class="sobrio rev"><div>
+  <div class="sep"></div>
+  <section id="razones" class="alt rev" style="background:var(--lav)"><div style="text-align:center">
+    <h2>Por estas razones quiero que seas tú</h2>
+    <p class="sub">Toca las flechas, una por una.</p>
+    <div class="box" id="rz" style="padding:30px 20px;min-height:210px;display:flex;flex-direction:column;justify-content:center">
+      <div class="px" id="rzn" style="font-size:10px;margin-bottom:16px"></div>
+      <p id="rzt" style="font-size:1.25em;font-style:italic"></p>
+    </div>
+    <div style="display:flex;gap:22px;justify-content:center;margin-top:24px"><button id="rzp" aria-label="Anterior">&#9664;</button><button id="rzs" aria-label="Siguiente">&#9654;</button></div>
+  </div></section>
+
+  <section class="spot rev" id="cancion">
+    <h2>Nuestra canción</h2>
+    <p class="sub">Escanea el código con tu celular o toca el botón para abrirla en Spotify.</p>
+    <img src="https://scannables.scdn.co/uri/plain/png/ffffff/black/640/spotify:track:5otNlLZsHLEDk20ZXTb2bc" alt="Código de Spotify" onerror="this.style.display='none'" style="border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink)">
+    <a class="b" id="spotlink" href="https://open.spotify.com/" target="_blank" rel="noopener">Abrir en Spotify</a>
+  </section>
+
+  <div class="sep"></div>
+  <section class="sobrio rev" id="cartas"><div>
     <h2>No todo fue tan bonito, pero fue real</h2>
     <p>No quiero recordar nuestra historia como si todo hubiera sido perfecto, porque no lo fue.</p>
     <p>Hubo momentos en los que mis propias decisiones terminaron haciéndote daño. Momentos en los que mis excesos, mis actitudes y las cosas que hacía sin pensar en las consecuencias terminaron preocupándote, cuando lo que yo quería era tenerte cerca y hacerte feliz.</p>
@@ -432,13 +485,6 @@ Pero que, si los dos así lo quieren, todavía pueden escribir juntos.
     </div>
   </section>
 
-  <section class="spot rev">
-    <h2>Nuestra canción</h2>
-    <p class="sub">Escanea el código con tu celular o toca el botón para abrirla en Spotify.</p>
-    <img src="spotify-code.png" alt="Código de Spotify" onerror="this.style.display='none'">
-    <a class="b" id="spotlink" href="https://open.spotify.com/" target="_blank" rel="noopener">Abrir en Spotify</a>
-  </section>
-
   <section class="sobrio rev"><div style="text-align:center">
     <h2>Y si alguna vez vuelves a estas páginas...</h2>
     <p>Ojalá recuerdes que, antes de todas las dificultades, hubo dos personas que se encontraron de una manera bastante inesperada.</p>
@@ -455,7 +501,7 @@ Pero que, si los dos así lo quieren, todavía pueden escribir juntos.
 
 <script>
 /* ===== AJUSTES FÁCILES ===== */
-const SPOTIFY_URL="https://open.spotify.com/";   // pega aquí tu enlace de la canción
+const SPOTIFY_URL="https://open.spotify.com/intl-es/track/5otNlLZsHLEDk20ZXTb2bc?si=7a38d24c7ddc4d99";   // pega aquí tu enlace de la canción
 const VOLUMEN=0.15;                               // 0 a 1
 /* ============================ */
 document.getElementById('spotlink').href=SPOTIFY_URL;
@@ -487,11 +533,13 @@ let P;
 $('entrar').onclick=()=>{
   const au=$('audio');au.volume=VOLUMEN;au.play().then(()=>{$('mus').textContent='♪ ON'}).catch(()=>{$('mus').textContent='♪ OFF'});
   $('mus').classList.add('on');
-  P=PREG[Math.floor(Math.random()*PREG.length)];$('q').textContent=P.t;$('pregunta').classList.add('on');$('r').focus()};
+  $('cv1').style.display='none';$('cv2').style.display='flex'};
+function irPregunta(){$('cv2').style.display='none';P=PREG[Math.floor(Math.random()*PREG.length)];$('q').textContent=P.t;$('pregunta').classList.add('on');$('r').focus()}
+$('pzk').onclick=irPregunta;
 function probar(){
   if(P.ok(norm($('r').value))){
     $('pregunta').classList.remove('on');$('portada').classList.add('off');run=false;
-    $('interior').classList.add('on');$('cont').classList.add('on');scrollTo(0,0);setTimeout(()=>$('portada').style.display='none',1000);observar()
+    $('interior').classList.add('on');$('hud').classList.add('on');scrollTo(0,0);setTimeout(()=>$('portada').style.display='none',1000);observar()
   }else{$('msg').textContent='Casi... piénsalo con cariño.';const b=document.querySelector('#pregunta .box');b.classList.remove('sac');void b.offsetWidth;b.classList.add('sac')}}
 $('ok').onclick=probar;$('r').onkeydown=e=>{if(e.key==='Enter')probar()};
 
@@ -508,7 +556,7 @@ const S=new Date(2026,0,31,0,0,0);
 function tick(){const n=new Date();let y=n.getFullYear()-S.getFullYear(),m=n.getMonth()-S.getMonth(),d=n.getDate()-S.getDate(),h=n.getHours(),i=n.getMinutes(),s=n.getSeconds();
  if(d<0){d+=new Date(n.getFullYear(),n.getMonth(),0).getDate();m--}if(m<0){m+=12;y--}
  const p=x=>String(x).padStart(2,'0');
- $('cont').innerHTML='Desde aquel 31 de enero<br>'+(y?y+' año · ':'')+m+' meses · '+d+' días · '+p(h)+':'+p(i)+':'+p(s)}
+ $('cont').innerHTML='Desde aquel 31 de enero · '+(y?y+' año · ':'')+m+' meses · '+d+' días · '+p(h)+':'+p(i)+':'+p(s)}
 tick();setInterval(tick,1000);
 
 // Cuento completo
@@ -518,6 +566,25 @@ tick();setInterval(tick,1000);
  document.getElementById('cuentoBox').innerHTML=cs.map((c,i)=>{const l=c.trim().split('\n');
   const f=F[i]?`<div class="foto"><img src="${F[i][0]}" alt="${F[i][1]}" loading="lazy"></div><p class="pie">${F[i][2]}</p>`:'';
   return `<div class="cap box"><h3>${l[0]}</h3>${l.slice(1).map(p=>'<p>'+fm(p)+'</p>').join('')}${f}</div>`}).join('')})();
+// Razones
+const RZ=["Porque incluso en mis días más difíciles, sigo pensando en ti.","Porque tu sonrisa me da vida.","Porque contigo puedo ser yo.","Porque me gusta hasta la manera en la que te enojas.","Porque todos los momentos contigo los recuerdo con cariño.","Porque tu voz calma mi alma.","Porque me encanta escucharte hablar, incluso de Diarios de vampiros o Gossip Girl.","Porque me gusta cuando me pides que no me vaya.","Porque contigo hasta un plato de arroz con huevo se sintió especial.","Porque me importan tus miedos, tus sueños y tus problemas.","Porque quiero verte cumplir todo lo que te propones.","Porque quiero verte en Francia cumpliendo tus sueños.","Porque me gusta tu forma de ser, incluso siendo tan distintos.","Porque hay canciones que inevitablemente me recuerdan a ti.","Porque no puedo imaginar un futuro sin ti.","Porque tus abrazos son de esos que nunca quisiera que se acaben.","Porque no quiero solamente tus días felices, también quiero acompañarte en los difíciles.","Porque me gusta tu mirada y la manera en que tus ojos expresan cosas sin hablar.","Porque quiero seguir creando recuerdos a tu lado.","Porque eres Valentina, y aunque podría escribir mil razones, hay algo en ti que simplemente no puedo explicar con palabras.","Un bonus... porque contigo grabé TikToks que nunca me imaginé hacer."];
+const FIN="Y si aceptas mis disculpas, estoy dispuesto a hablar. Cuando tú quieras, sin presión.";
+function mk(p,list,onEnd){const n=$(p+'n'),t=$(p+'t'),b=$(p+'p'),s=$(p+'s');let i=0;
+ const lab=()=>'';
+ function go(d){if(d>0&&i==list.length-1&&onEnd){onEnd();return}
+  i=Math.max(0,Math.min(list.length-1,i+d));t.style.opacity=0;
+  setTimeout(()=>{n.textContent=lab(i);t.textContent=list[i];t.style.opacity=1},d?200:0);
+  b.disabled=i==0;const u=i==list.length-1;s.disabled=u&&!onEnd;s.innerHTML=u&&onEnd?'Continuar':'&#9654;'}
+ b.onclick=()=>go(-1);s.onclick=()=>go(1);go(0);return go}
+const gIn=mk('rz',RZ),gPre=mk('pz',RZ.concat([FIN]),irPregunta);
+function sw(id,g){let x=0;const e=$(id);e.addEventListener('touchstart',v=>x=v.touches[0].clientX,{passive:true});e.addEventListener('touchend',v=>{const d=v.changedTouches[0].clientX-x;if(Math.abs(d)>50)g(d<0?1:-1)})}
+sw('rz',gIn);sw('pz',gPre);
+addEventListener('keydown',e=>{const k=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!k)return;
+ if($('cv2').style.display==='flex')return gPre(k);
+ if(!$('interior').classList.contains('on'))return;const r=$('rz').getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0)gIn(k)});
+// Menú: resaltar la sección actual
+const SEC=[...document.querySelectorAll('#nav a')].map(a=>[a,document.querySelector(a.getAttribute('href'))]);
+addEventListener('scroll',()=>{let c=SEC[0];SEC.forEach(s=>{if(s[1].getBoundingClientRect().top<=140)c=s});SEC.forEach(s=>s[0].classList.toggle('act',s===c))},{passive:true});
 // Fotos en grande
 const L=$('luz');document.querySelectorAll('.foto img').forEach(im=>im.onclick=()=>{L.querySelector('img').src=im.src;L.classList.add('on')});
 L.onclick=()=>L.classList.remove('on');
