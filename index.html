@@ -437,6 +437,7 @@ Pero que, si los dos así lo quieren, todavía pueden escribir juntos.
   <section class="rev" id="galeria">
     <h2>Nuestros momentos</h2>
     <p class="sub">Toca una foto para verla en grande.</p>
+    <p class="pie" id="estado"></p>
     <div class="grid">
       <div class="foto"><img data-enc="foto-07.enc" alt="Recuerdo" loading="lazy"></div>
       <div class="foto"><img data-enc="foto-04.enc" alt="El vestido amarillo" loading="lazy"></div>
@@ -599,16 +600,20 @@ const SEC=[...document.querySelectorAll('#nav a')].map(a=>[a,document.querySelec
 addEventListener('scroll',()=>{let c=SEC[0];SEC.forEach(s=>{if(s[1].getBoundingClientRect().top<=140)c=s});SEC.forEach(s=>s[0].classList.toggle('act',s===c))},{passive:true});
 // Descifrar fotos y videos
 const u8=b=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
-async function descifrar(){try{
- const L=await(await fetch('llave.json')).json(),S=crypto.subtle;
+async function descifrar(){const st=$('estado');st.textContent='';try{
+ if(!crypto.subtle){st.textContent='Para ver las fotos abre la página con https:// (sin conexión segura el navegador bloquea el descifrado).';return}
+ const R=await fetch('llave.json');if(!R.ok){st.textContent='Falta llave.json en el repositorio.';return}
+ const L=await R.json(),S=crypto.subtle;
  const m=await S.importKey('raw',new TextEncoder().encode(P.c),'PBKDF2',false,['deriveKey']);
  const k=await S.deriveKey({name:'PBKDF2',salt:u8(L.s),iterations:L.i,hash:'SHA-256'},m,{name:'AES-GCM',length:256},false,['decrypt']);
  const w=u8(L.k[PREG.indexOf(P)]);
  const mk=await S.importKey('raw',await S.decrypt({name:'AES-GCM',iv:w.slice(0,12)},k,w.slice(12)),'AES-GCM',false,['decrypt']);
- document.querySelectorAll('[data-enc]').forEach(e=>fetch(e.dataset.enc).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(async b=>{
+ const falta=[];
+ await Promise.all([...document.querySelectorAll('[data-enc]')].map(e=>fetch(e.dataset.enc).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(async b=>{
   const x=new Uint8Array(b),d=new Uint8Array(await S.decrypt({name:'AES-GCM',iv:x.slice(0,12)},mk,x.slice(12))),n=d[0];
-  e.src=URL.createObjectURL(new Blob([d.slice(1+n)],{type:new TextDecoder().decode(d.slice(1,1+n))}))}).catch(()=>{}))
-}catch(e){console.error(e)}}
+  e.src=URL.createObjectURL(new Blob([d.slice(1+n)],{type:new TextDecoder().decode(d.slice(1,1+n))}))}).catch(()=>{if(e.id!=='v2')falta.push(e.dataset.enc)})));
+ if(falta.length)st.textContent='No se encontraron o no se pudieron abrir: '+falta.join(', ');
+}catch(e){st.textContent='No se pudieron descifrar. Revisa que llave.json y los .enc sean de la misma tanda de cifrado.';console.error(e)}}
 // Fotos en grande
 const L=$('luz');document.querySelectorAll('.foto img').forEach(im=>im.onclick=()=>{L.querySelector('img').src=im.src;L.classList.add('on')});
 L.onclick=()=>L.classList.remove('on');
