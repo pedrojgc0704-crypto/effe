@@ -4,16 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Recuerdos de Valentina y Pedro</title>
+<meta name="robots" content="noindex,nofollow">
 <meta name="description" content="Valentina, esta página sigue aquí para ti.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Recuerdos de Valentina y Pedro">
 <meta property="og:description" content="Valentina, esta página sigue aquí para ti.">
 <meta property="og:url" content="https://valentinaypedro.com/">
-<meta property="og:image" content="https://valentinaypedro.com/preview.png">
+<meta property="og:image" content="https://valentinaypedro.com/portada.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://valentinaypedro.com/preview.png">
+<meta name="twitter:image" content="https://valentinaypedro.com/portada.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Lora:ital@0;1&display=swap" rel="stylesheet">
 <style>
@@ -108,6 +109,7 @@ button:disabled{opacity:.35;cursor:default}
 #mus.on{display:block}
 #luz{position:fixed;inset:0;z-index:90;background:rgba(20,15,40,.92);display:none;align-items:center;justify-content:center;cursor:zoom-out;padding:14px}
 #luz.on{display:flex}#luz img{max-height:94vh;border:3px solid #fff}
+img[data-enc]:not([src]){visibility:hidden}
 .rev{opacity:0;transform:translateY(16px);transition:.7s}.rev.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.rev{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
 </style>
@@ -436,16 +438,16 @@ Pero que, si los dos así lo quieren, todavía pueden escribir juntos.
     <h2>Nuestros momentos</h2>
     <p class="sub">Toca una foto para verla en grande.</p>
     <div class="grid">
-      <div class="foto"><img src="foto-07.jpg.jpeg" alt="Recuerdo" loading="lazy"></div>
-      <div class="foto"><img src="foto-04.jpg.jpeg" alt="El vestido amarillo" loading="lazy"></div>
-      <div class="foto"><img src="foto-02.jpg.jpeg" alt="Recuerdo" loading="lazy"></div>
-      <div class="foto"><img src="foto-06.jpg.jpeg" alt="Recuerdo" loading="lazy"></div>
-      <div class="foto"><img src="foto-05.jpg.jpeg" alt="Recuerdo" loading="lazy"></div>
-      <div class="foto"><img src="foto-03.jpg.jpeg" alt="Recuerdo" loading="lazy"></div>
-      <div class="foto"><img src="foto-01.jpg.jpeg" alt="Recuerdo" loading="lazy"></div>
+      <div class="foto"><img data-enc="foto-07.enc" alt="Recuerdo" loading="lazy"></div>
+      <div class="foto"><img data-enc="foto-04.enc" alt="El vestido amarillo" loading="lazy"></div>
+      <div class="foto"><img data-enc="foto-02.enc" alt="Recuerdo" loading="lazy"></div>
+      <div class="foto"><img data-enc="foto-06.enc" alt="Recuerdo" loading="lazy"></div>
+      <div class="foto"><img data-enc="foto-05.enc" alt="Recuerdo" loading="lazy"></div>
+      <div class="foto"><img data-enc="foto-03.enc" alt="Recuerdo" loading="lazy"></div>
+      <div class="foto"><img data-enc="foto-01.enc" alt="Recuerdo" loading="lazy"></div>
     </div>
-    <div class="foto v"><video id="v1" src="video-01.mp4.mov" controls playsinline preload="metadata"></video></div>
-    <div class="foto v" id="v2box" style="display:none"><video id="v2" src="video-02.mp4" controls playsinline preload="metadata"></video></div>
+    <div class="foto v"><video id="v1" data-enc="video-01.enc" controls playsinline preload="metadata"></video></div>
+    <div class="foto v" id="v2box" style="display:none"><video id="v2" data-enc="video-02.enc" controls playsinline preload="metadata"></video></div>
   </section>
 
   <div class="sep"></div>
@@ -537,8 +539,8 @@ let run=true;(function dibujar(t){if(!run)return;cx.clearRect(0,0,cv.width,cv.he
 // Preguntas
 const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[\/\-.,]/g,' ').replace(/\s+/g,' ').trim();
 const PREG=[
- {t:'¿Cuándo fue nuestro primer beso?',ok:a=>/^(el )?31 (de )?(enero|0?1) (de )?2026$/.test(a)},
- {t:'¿Cuál es la flor favorita de Valentina?',ok:a=>/^(el |un |los )?(girasol|girasoles)$/.test(a)}];
+ {t:'¿Cuándo fue nuestro primer beso?',c:'31012026',ok:a=>/^(el )?31 (de )?(enero|0?1) (de )?2026$/.test(a)},
+ {t:'¿Cuál es la flor favorita de Valentina?',c:'girasol',ok:a=>/^(el |un |los )?(girasol|girasoles)$/.test(a)}];
 let P;
 $('entrar').onclick=()=>{
   const au=$('audio');au.volume=VOLUMEN;au.play().then(()=>{$('mus').textContent='♪ ON'}).catch(()=>{$('mus').textContent='♪ OFF'});
@@ -547,7 +549,7 @@ $('entrar').onclick=()=>{
 function irPregunta(){$('cv2').style.display='none';P=PREG[Math.floor(Math.random()*PREG.length)];$('q').textContent=P.t;$('pregunta').classList.add('on');$('r').focus()}
 $('pzk').onclick=irPregunta;
 function probar(){
-  if(P.ok(norm($('r').value))){
+  if(P.ok(norm($('r').value))){descifrar();
     $('pregunta').classList.remove('on');$('portada').classList.add('off');run=false;
     $('interior').classList.add('on');$('hud').classList.add('on');scrollTo(0,0);setTimeout(()=>$('portada').style.display='none',1000);observar()
   }else{$('msg').textContent='Casi... piénsalo con cariño.';const b=document.querySelector('#pregunta .box');b.classList.remove('sac');void b.offsetWidth;b.classList.add('sac')}}
@@ -595,6 +597,18 @@ addEventListener('keydown',e=>{const k=e.key==='ArrowRight'?1:e.key==='ArrowLeft
 // Menú: resaltar la sección actual
 const SEC=[...document.querySelectorAll('#nav a')].map(a=>[a,document.querySelector(a.getAttribute('href'))]);
 addEventListener('scroll',()=>{let c=SEC[0];SEC.forEach(s=>{if(s[1].getBoundingClientRect().top<=140)c=s});SEC.forEach(s=>s[0].classList.toggle('act',s===c))},{passive:true});
+// Descifrar fotos y videos
+const u8=b=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
+async function descifrar(){try{
+ const L=await(await fetch('llave.json')).json(),S=crypto.subtle;
+ const m=await S.importKey('raw',new TextEncoder().encode(P.c),'PBKDF2',false,['deriveKey']);
+ const k=await S.deriveKey({name:'PBKDF2',salt:u8(L.s),iterations:L.i,hash:'SHA-256'},m,{name:'AES-GCM',length:256},false,['decrypt']);
+ const w=u8(L.k[PREG.indexOf(P)]);
+ const mk=await S.importKey('raw',await S.decrypt({name:'AES-GCM',iv:w.slice(0,12)},k,w.slice(12)),'AES-GCM',false,['decrypt']);
+ document.querySelectorAll('[data-enc]').forEach(e=>fetch(e.dataset.enc).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(async b=>{
+  const x=new Uint8Array(b),d=new Uint8Array(await S.decrypt({name:'AES-GCM',iv:x.slice(0,12)},mk,x.slice(12))),n=d[0];
+  e.src=URL.createObjectURL(new Blob([d.slice(1+n)],{type:new TextDecoder().decode(d.slice(1,1+n))}))}).catch(()=>{}))
+}catch(e){console.error(e)}}
 // Fotos en grande
 const L=$('luz');document.querySelectorAll('.foto img').forEach(im=>im.onclick=()=>{L.querySelector('img').src=im.src;L.classList.add('on')});
 L.onclick=()=>L.classList.remove('on');
